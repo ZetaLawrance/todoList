@@ -4,52 +4,48 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Todo extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
-        'title', 
-        'description', 
+        'title',
+        'description',
         'priority',
         'start_date',
         'due_date',
-        'completed'
+        'completed',
     ];
-    
+
     protected $casts = [
+        'start_date' => 'datetime',
+        'due_date' => 'datetime',
         'completed' => 'boolean',
-        'start_date' => 'date',
-        'due_date' => 'date',
     ];
-    
+
+    protected $appends = ['is_overdue', 'priority_badge', 'can_be_completed'];
+
+    // Accessor untuk mengecek apakah tugas terlambat
+    public function getIsOverdueAttribute()
+    {
+        return $this->due_date && !$this->completed && $this->due_date->isPast();
+    }
+
+    // Accessor untuk mendapatkan badge style berdasarkan prioritas
     public function getPriorityBadgeAttribute()
     {
-        return match($this->priority) {
+        return [
             'tinggi' => 'danger',
             'sedang' => 'warning',
             'rendah' => 'info',
-            default => 'secondary',
-        };
+        ][$this->priority] ?? 'secondary';
     }
-    
-    public function getIsOverdueAttribute()
-    {
-        if (!$this->due_date) {
-            return false;
-        }
-        
-        return !$this->completed && $this->due_date->isPast();
-    }
-    
+
+    // Accessor untuk mengecek apakah tugas dapat diselesaikan
     public function getCanBeCompletedAttribute()
     {
-        // Jika sudah terlambat, tidak bisa diubah menjadi completed
-        if ($this->is_overdue) {
-            return false;
-        }
-        
-        return true;
+        return !$this->is_overdue || $this->completed;
     }
 }

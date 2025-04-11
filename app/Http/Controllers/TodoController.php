@@ -46,10 +46,14 @@ class TodoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|max:255',
+            'title' => 'required|max:255|unique:todos,title',
             'priority' => 'required|in:rendah,sedang,tinggi',
-            'start_date' => 'nullable|date',
+            'start_date' => 'nullable|date|after_or_equal:today',
             'due_date' => 'nullable|date|after_or_equal:start_date',
+        ], [
+            'title.unique' => 'Judul tugas sudah digunakan, silakan pilih judul lain.',
+            'start_date.after_or_equal' => 'Tanggal mulai tidak boleh di masa lalu.',
+            'due_date.after_or_equal' => 'Tenggat waktu harus setelah atau sama dengan tanggal mulai.'
         ]);
 
         Todo::create([
@@ -65,29 +69,44 @@ class TodoController extends Controller
 
     public function edit(Todo $todo)
     {
+        // Cek jika todo sudah selesai atau terlambat
+        if ($todo->completed || $todo->is_overdue) {
+            return redirect()->route('todos.index')->with('error', 'Tugas yang sudah selesai atau terlambat tidak dapat diedit!');
+        }
+
         return view('todos.edit', compact('todo'));
     }
 
     public function update(Request $request, Todo $todo)
     {
+        // Cek lagi jika todo sudah selesai atau terlambat
+        if ($todo->completed || $todo->is_overdue) {
+            return redirect()->route('todos.index')->with('error', 'Tugas yang sudah selesai atau terlambat tidak dapat diedit!');
+        }
+        
         $request->validate([
-            'title' => 'required|max:255',
+            'title' => 'required|max:255|unique:todos,title,' . $todo->id,
             'priority' => 'required|in:rendah,sedang,tinggi',
-            'start_date' => 'nullable|date',
+            'start_date' => 'nullable|date|after_or_equal:today',
             'due_date' => 'nullable|date|after_or_equal:start_date',
+        ], [
+            'title.unique' => 'Judul tugas sudah digunakan, silakan pilih judul lain.',
+            'start_date.after_or_equal' => 'Tanggal mulai tidak boleh di masa lalu.',
+            'due_date.after_or_equal' => 'Tenggat waktu harus setelah atau sama dengan tanggal mulai.'
         ]);
-
+    
         $todo->update([
             'title' => $request->title,
             'description' => $request->description,
             'priority' => $request->priority,
             'start_date' => $request->start_date,
             'due_date' => $request->due_date,
+            'completed' => $request->has('completed'), // Mengubah status selesai berdasarkan checkbox
         ]);
-
+    
         return redirect()->route('todos.index')->with('success', 'Todo berhasil diupdate!');
     }
-
+    
     public function destroy(Todo $todo)
     {
         $todo->delete();

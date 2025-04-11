@@ -121,9 +121,16 @@
                                 </div>
                                 <div>
                                     <div class="btn-group" role="group">
-                                        <a href="{{ route('todos.edit', $todo) }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                                        @if(!$todo->completed && !$todo->is_overdue)
+                                            <a href="{{ route('todos.edit', $todo) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        @else
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" disabled
+                                                title="Tugas yang sudah selesai atau terlambat tidak dapat diedit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        @endif
                                         <form action="{{ route('todos.destroy', $todo) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
