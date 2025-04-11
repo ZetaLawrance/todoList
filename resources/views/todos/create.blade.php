@@ -41,14 +41,14 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="start_date" class="form-label fw-medium">Tanggal Mulai</label>
-                                <input type="date" class="form-control @error('start_date') is-invalid @enderror" id="start_date" name="start_date" value="{{ old('start_date') }}">
+                                <input type="date" class="form-control @error('start_date') is-invalid @enderror" id="start_date" name="start_date" value="{{ old('start_date') }}" required> 
                                 @error('start_date')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-4">
                                 <label for="due_date" class="form-label fw-medium">Tenggat Waktu</label>
-                                <input type="date" class="form-control @error('due_date') is-invalid @enderror" id="due_date" name="due_date" value="{{ old('due_date') }}">
+                                <input type="date" class="form-control @error('due_date') is-invalid @enderror" id="due_date" name="due_date" value="{{ old('due_date') }}" required>
                                 @error('due_date')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

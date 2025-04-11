@@ -15,7 +15,7 @@
 
     <div class="filter-section">
         <form action="{{ route('sticky-notes.index') }}" method="GET" class="row g-3">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label class="form-label fw-medium">Urutkan</label>
                 <select name="sort" class="form-select" onchange="this.form.submit()">
                     <option value="created_at-desc" {{ request('sort') == 'created_at-desc' ? 'selected' : '' }}>Terbaru</option>
@@ -24,7 +24,7 @@
                     <option value="title-desc" {{ request('sort') == 'title-desc' ? 'selected' : '' }}>Judul (Z-A)</option>
                 </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label class="form-label fw-medium">Warna</label>
                 <select name="color" class="form-select" onchange="this.form.submit()">
                     <option value="all" {{ request('color') == 'all' ? 'selected' : '' }}>Semua</option>
@@ -32,11 +32,6 @@
                         <option value="{{ $value }}" {{ request('color') == $value ? 'selected' : '' }}>{{ $name }}</option>
                     @endforeach
                 </select>
-            </div>
-            <div class="col-md-4 d-flex align-items-end">
-                <button type="reset" class="btn btn-outline-secondary w-100" onclick="window.location='{{ route('sticky-notes.index') }}'">
-                    <i class="fas fa-redo me-1"></i> Reset
-                </button>
             </div>
         </form>
     </div>

@@ -216,8 +216,7 @@
         
         .sticky-note {
             border-radius: 5px;
-            min-height: 200px;
-            margin-bottom: 1.5rem;
+            min-height: 400px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
             overflow: hidden;

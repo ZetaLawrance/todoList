@@ -11,31 +11,30 @@ class TodoController extends Controller
     {
         $filter = $request->filter ?? 'all';
         $sort = $request->sort ?? 'created_at-desc';
-        
+
         [$sortField, $sortDirection] = explode('-', $sort);
-        
+
         $query = Todo::query();
-        
-        // Filter berdasarkan status
+
         if ($filter === 'active') {
             $query->where('completed', false);
         } elseif ($filter === 'completed') {
             $query->where('completed', true);
         } elseif ($filter === 'overdue') {
             $query->whereDate('due_date', '<', now())
-                  ->where('completed', false);
+                ->where('completed', false);
         }
-        
+
         // Filter berdasarkan prioritas
         if ($request->has('priority') && $request->priority != 'all') {
             $query->where('priority', $request->priority);
         }
-        
+
         // Sort
         $query->orderBy($sortField, $sortDirection);
-        
+
         $todos = $query->get();
-        
+
         return view('todos.index', compact('todos', 'filter', 'sort'));
     }
 
@@ -97,15 +96,14 @@ class TodoController extends Controller
 
     public function toggleComplete(Todo $todo)
     {
-        // Jika tugas terlambat dan belum selesai, tidak bisa diubah menjadi selesai
         if ($todo->is_overdue && !$todo->completed) {
             return redirect()->route('todos.index')->with('error', 'Tugas yang sudah terlambat tidak dapat ditandai selesai!');
         }
-        
+
         $todo->update([
             'completed' => !$todo->completed
         ]);
-        
+
         return redirect()->route('todos.index');
     }
 }
