@@ -280,10 +280,6 @@
                 <i class="fas fa-tasks"></i>
                 <span>Daftar Tugas</span>
             </a>
-            <a href="{{ route('sticky-notes.index') }}" class="sidebar-menu-item {{ request()->routeIs('sticky-notes.*') ? 'active' : '' }}">
-                <i class="fas fa-sticky-note"></i>
-                <span>Catatan</span>
-            </a>
         </div>
     </div>
 
